@@ -1,0 +1,67 @@
+#include <iostream>
+#include <iomanip>
+#include <regex>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+#pragma warning(disable : 4996)
+
+using namespace std;
+
+class test
+{
+public:
+    void wrong(int month, int day, int year)
+    {
+        if (
+            month > 12 || day > 31 || month == 0 || day == 0 || year == 0 ||
+            (month % 2 == 0 && month < 8 && day == 31) || (month % 2 == 1 && month > 8 && day == 31) ||
+            (month == 2 && day > 29) || (month == 2 && (year % 4 != 0 || (year % 100 == 0 && year % 400 != 0)) && day > 28)
+            ) {
+            cout << "STRING is WRONG";
+        }
+    }
+
+    void solution()
+    {
+        string input;
+        cin >> input;
+
+        if (regex_match(input, regex("(\\{[0-9]{2}/[0-9]{2}/[0-9]{2}\\})(,\\{[0-9]{2}/[0-9]{2}/[0-9]{2}\\})*"))) 
+        {
+
+            char* input_ptr = &input[0];
+            char* date_ptr = strtok(input_ptr, ",");
+
+            regex date_regex("\\{([0-9]{2})/([0-9]{2})/([0-9]{2})\\}");
+            smatch match;
+
+            while (date_ptr != NULL) {
+                string date(date_ptr);
+                regex_search(date, match, date_regex);
+                int month = stoi(match.str(1));
+                int day = stoi(match.str(2));
+                int year = stoi(match.str(3));
+
+                wrong(month, day, year);
+
+                date_ptr = strtok(NULL, ",");
+            }
+
+            cout << "STRING is RIGHT";
+        }
+        else {
+            cout << "STRING is WRONG";
+        }
+    }
+};
+
+int main()
+{
+    test obj;
+
+    obj.solution();
+
+    return 0;
+}
